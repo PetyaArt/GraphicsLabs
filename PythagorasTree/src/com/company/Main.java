@@ -3,6 +3,7 @@ package com.company;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Scanner;
 
@@ -64,16 +65,28 @@ public class Main {
         double y4 = y - dy - (side * sin(ALPHA) * cos(fi - ALPHA));
 
 
-        Line2D line2D = new Line2D.Double(x, y, x1, y1);
+        Path2D square = new Path2D.Float();
+        square.moveTo(x, y);
+        square.lineTo(x1, y1);
+        square.lineTo(x2, y2);
+        square.lineTo(x3, y3);
+        square.closePath();
+
+        /*Line2D line2D = new Line2D.Double(x, y, x1, y1);
         Line2D line2D1 = new Line2D.Double(x1, y1, x2, y2);
         Line2D line2D2 = new Line2D.Double(x2, y2, x3, y3);
-        Line2D line2D3 = new Line2D.Double(x3, y3, x, y);
+        Line2D line2D3 = new Line2D.Double(x3, y3, x, y);*/
 
         g.setColor(Color.getHSBColor((float) random() + depth * 0.02f, 1, 1));
+        g.fill(square);
+        g.setColor(Color.lightGray);
+        g.draw(square);
+
+        /*g.setColor(Color.getHSBColor((float) random() + depth * 0.02f, 1, 1));
         g.draw(line2D);
         g.draw(line2D1);
         g.draw(line2D2);
-        g.draw(line2D3);
+        g.draw(line2D3);*/
 
 
         drawTree(g, x4, y4,depth + 1, fi - ALPHA, side * cos(ALPHA));
