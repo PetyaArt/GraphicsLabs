@@ -1,4 +1,3 @@
-package com.company;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +28,7 @@ public class Main {
     public static class MyComponent extends JComponent {
         @Override
         public void paint(Graphics g) {
-            drawTree((Graphics2D) g, 450, 500, 0, 0, 100);
+            drawTree((Graphics2D) g, 450, 500, 0, 0, 100, 0, 0);
             ((Runnable) () -> {
                 repaint();
                 try {
@@ -44,13 +43,13 @@ public class Main {
 
     }
 
-    private static void drawTree(Graphics2D g, double x, double y, int depth, double fi, double side) {
+    private static void drawTree(Graphics2D g, double x, double y, int depth, double fi, double side, double prev_point_x, double prev_point_y) {
 
         if (depth == depthLimit)
             return;
 
-        double dx = side * sin(fi); //0
-        double dy = side * cos(fi); //100
+        double dx = side * sin(fi);
+        double dy = side * cos(fi);
 
         double x1 = x + dy;
         double y1 = y - dx;
@@ -71,31 +70,21 @@ public class Main {
         double y_t = (y2 + y3 + y4) / 3;
 
 
-        Path2D square = new Path2D.Float();
-        square.moveTo(x, y);
-        square.lineTo(x1, y1);
-        square.lineTo(x2, y2);
-        square.lineTo(x3, y3);
-        square.closePath();
+        if (depth == 0){
+            Line2D line = new Line2D.Double(x_c, y_c, x_t, y_t);
+            g.setColor(Color.getHSBColor((float) random() + depth * 0.02f, 1, 1));
+            g.draw(line);
+            drawTree(g, x4, y4,depth + 1, fi - ALPHA, side * cos(ALPHA), x_t, y_t);
+            drawTree(g, x3, y3,depth + 1, fi - ALPHA + PI / 2, side * sin(ALPHA), x_t, y_t);
+        }
 
-        /*Line2D line2D = new Line2D.Double(x, y, x1, y1);
-        Line2D line2D1 = new Line2D.Double(x1, y1, x2, y2);
-        Line2D line2D2 = new Line2D.Double(x2, y2, x3, y3);
-        Line2D line2D3 = new Line2D.Double(x3, y3, x, y);*/
-
-        g.setColor(Color.getHSBColor((float) random() + depth * 0.02f, 1, 1));
-        g.fill(square);
-        g.setColor(Color.lightGray);
-        g.draw(square);
-
-        /*g.setColor(Color.getHSBColor((float) random() + depth * 0.02f, 1, 1));
-        g.draw(line2D);
-        g.draw(line2D1);
-        g.draw(line2D2);
-        g.draw(line2D3);*/
-
-        drawTree(g, x4, y4, depth + 1, fi - ALPHA, side * cos(ALPHA));
-        drawTree(g, x3, y3, depth + 1, fi - ALPHA + PI / 2, side * sin(ALPHA));
+        if (depth >= 1) {
+            Line2D line = new Line2D.Double(prev_point_x, prev_point_y, x_c, y_c);
+            g.setColor(Color.getHSBColor((float) random() + depth * 0.02f, 1, 1));
+            g.draw(line);
+            drawTree(g, x4, y4,depth + 1, fi - ALPHA, side * cos(ALPHA), x_c, y_c);
+            drawTree(g, x3, y3,depth + 1, fi - ALPHA + PI / 2, side * sin(ALPHA), x_c, y_c);
+        }
     }
 
 
